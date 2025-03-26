@@ -1,0 +1,95 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+
+// Add the vector icons font configuration
+project.ext.vectoricons = [
+    iconFontNames: ['AntDesign.ttf', 'MaterialCommunityIcons.ttf', 'FontAwesome.ttf'] // Add other fonts as needed
+]
+
+// Apply the fonts.gradle script for react-native-vector-icons
+// apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+// apply from: file("../../android/app/src/main/assets/fonts.gradle")
+
+/**
+ * This is the configuration block to customize your React Native Android app.
+ * By default you don't need to apply any configuration, just uncomment the lines you need.
+ */
+react {
+    autolinkLibrariesWithApp()
+}
+
+/**
+ * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ */
+def enableProguardInReleaseBuilds = false;
+
+/**
+ * The preferred build flavor of JavaScriptCore (JSC)
+ */
+def jscFlavor = 'org.webkit:android-jsc:+'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.PocketBanner"
+
+    lintOptions {
+          checkReleaseBuilds false   
+        //   abortOnError false
+      }
+
+    defaultConfig {
+        applicationId "com.PocketBanner"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    // Ensure the proper task dependencies
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'generateReleaseLintVitalReportModel') {
+            task.dependsOn(':app:copyReactNativeVectorIconFonts')
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("C:/Users/HP/Downloads/Personal/AIDrawingApp/Drawing/android/app/my-upload-key.keystore")
+            storePassword "Abhi@123"
+            keyAlias "my-key-alias"
+            keyPassword "Abhi@123" 
+        }
+        
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+}
+
+dependencies {
+    implementation("com.facebook.react:react-android")
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation jscFlavor
+    }
+}
