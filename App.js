@@ -5,7 +5,7 @@ import {PaperProvider, MD3LightTheme} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import HomeScreen from './src/screens/HomeScreen';
 import HistoryScreen from './src/screens/HistoryScreen';
-
+import wetherApp from './src/screens/wetherApp';
 const Tab = createBottomTabNavigator();
 
 const lightTheme = {
@@ -34,7 +34,7 @@ export default function App() {
               return <Icon name={iconName} size={size} color={color} />;
             },
           })}>
-          <Tab.Screen name="Home" component={HomeScreen}  />
+          <Tab.Screen name="Home" component={wetherApp}  />
           <Tab.Screen name="History" component={HistoryScreen} />
         </Tab.Navigator>
       </NavigationContainer>
